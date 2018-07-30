@@ -1,18 +1,13 @@
 package com.example.administrator.googlemaps;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -31,8 +26,10 @@ import java.util.List;
 public class MapsUtils implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private Location location;
-    private List<Location> RecordList=new ArrayList<Location>();
+    //画路径
+    private List<Location> mRecordList = new ArrayList<Location>();
+    //填入位移
+    private List<Location> mDisplacementList = new ArrayList<Location>();
 
     public long getmStartTime() {
         return mStartTime;
@@ -42,7 +39,11 @@ public class MapsUtils implements OnMapReadyCallback {
         return mEndTime;
     }
 
-    private float distance;
+    //总路程
+    private float mDistance;
+    //瞬时位移
+    private float mDisplacement;
+    private float mSpeed;
     private long mStartTime;
     private long mEndTime;
     private SupportMapFragment mSupportMapFragment;
@@ -102,15 +103,17 @@ public class MapsUtils implements OnMapReadyCallback {
                 }
 
                 if (mState == State.RUNNING) {
-                    RecordList.add(location);
+                    mRecordList.add(location);
+                    mDisplacementList.add(location);
                     setDistance();
-                    for(int k=0; k< RecordList.size()-1 ;k++) {
-                        LatLng currentLatlng = new LatLng(RecordList.get(k).getLatitude(), RecordList.get(k).getLongitude());
-                        LatLng lastLatlng = new LatLng(RecordList.get(k+1).getLatitude(),RecordList.get(k+1).getLongitude());
+                    setSpeed();
+                    for(int k=0; k< mDisplacementList.size()-1 ;k++) {
+                        LatLng currentLatlng = new LatLng(mDisplacementList.get(k).getLatitude(), mDisplacementList.get(k).getLongitude());
+                        LatLng lastLatlng = new LatLng(mDisplacementList.get(k+1).getLatitude(),mDisplacementList.get(k+1).getLongitude());
                         PolylineOptions rectOptions = new PolylineOptions()
                                 .add(lastLatlng,currentLatlng)
-                                .color(Color.GRAY)
-                                .width(5.5f);
+                                .color(Color.RED)
+                                .width(6.5f);
                         mMap.addPolyline(rectOptions);
                     }
                 }
@@ -134,55 +137,93 @@ public class MapsUtils implements OnMapReadyCallback {
     }
 
     public String getDistance() {
-        return String.valueOf(distance);
+        return String.valueOf(mDistance);
     }
 
-    public String getDuration() {
-        return String.valueOf((mEndTime - mStartTime) / 1000f);
+    public String getSpeed(){
+        return String.valueOf(mSpeed);
     }
 
-    public String getAverageSpeed() {
-        mEndTime=System.currentTimeMillis();
-        return String.valueOf(distance / (float) (mEndTime - mStartTime));
+    public void setSpeed() {
+        this.mEndTime=System.currentTimeMillis();
+        if( ( (mEndTime - mStartTime)/1000f ) <= 4.0f){
+            this.mSpeed =  0.0f;
+        }else if(  (    (mEndTime - mStartTime)/1000f ) <= 10.0f && (    (mEndTime - mStartTime)/1000f  ) > 4.0f  ) {
+            this.mSpeed = mDisplacement/1.0f;
+        }
+        else{
+            this.mSpeed = mDisplacement/3.0f;
+        }
+//        return String.valueOf(distance / (float) (mEndTime - mStartTime));
     }
-
 
     //设置距离
     public void setDistance() {
-        this.distance = 0.0f;
-        if (RecordList != null && RecordList.size() > 1 ) {
-            for (int i = 0; i < RecordList.size() - 1; i++) {
-                Location firstPoint = RecordList.get(i);
-                Location secondPoint = RecordList.get(i + 1);
+        this.mDistance = 0.0f;
+        this.mDisplacement = 0.0f;
+        if (mRecordList != null && mRecordList.size() > 1 ) {
+            for (int i = 0; i < mRecordList.size() - 1; i++) {
+                Location firstPoint = mRecordList.get(i);
+                Location secondPoint = mRecordList.get(i + 1);
                 LatLng firstLatLng = new LatLng(firstPoint.getLatitude(),
                         firstPoint.getLongitude());
                 LatLng secondLatLng = new LatLng(secondPoint.getLatitude(),
                         secondPoint.getLongitude());
                 double betweenDis = calculateLineDistance(firstLatLng,
                         secondLatLng);
-                this.distance += (float)(betweenDis);
+                this.mDistance += (float)(betweenDis);
             }
+        }
+
+        if(mDisplacementList.size()>1 && mDisplacementList.size()<=10){
+                Location lastPoint = mDisplacementList.get(mDisplacementList.size() - 1);
+                Location last_but_one_Point = mDisplacementList.get(mDisplacementList.size() - 2);
+                LatLng lastLatLng = new LatLng(lastPoint.getLatitude(),
+                        lastPoint.getLongitude());
+                LatLng last_but_one_LatLng = new LatLng(last_but_one_Point.getLatitude(),
+                        last_but_one_Point.getLongitude());
+                double betweenDis = calculateLineDistance(last_but_one_LatLng,
+                        lastLatLng);
+                this.mDisplacement = (float)(betweenDis);
+        }else if(mDisplacementList.size()>10){
+            Location last = mDisplacementList.get(mDisplacementList.size() - 1);
+            Location last_but_one = mDisplacementList.get(mDisplacementList.size() - 2);
+            Location third_from_bottom = mDisplacementList.get(mDisplacementList.size() - 3);
+            Location fourth_from_bottom = mDisplacementList.get(mDisplacementList.size() - 4);
+            LatLng last_ll = new LatLng(last.getLatitude(), last.getLongitude());
+            LatLng last_but_one_ll = new LatLng(last_but_one.getLatitude(), last_but_one.getLongitude());
+            LatLng third_from_bottom_ll = new LatLng(third_from_bottom.getLatitude(), third_from_bottom.getLongitude());
+            LatLng fourth_from_bottom_ll = new LatLng(fourth_from_bottom.getLatitude(), fourth_from_bottom.getLongitude());
+            double betweenDis1 = calculateLineDistance(fourth_from_bottom_ll, third_from_bottom_ll);
+            double betweenDis2 = calculateLineDistance(third_from_bottom_ll, last_but_one_ll);
+            double betweenDis3 = calculateLineDistance(last_but_one_ll, last_ll);
+            this.mDisplacement = (float)(betweenDis1 + betweenDis2 +  betweenDis3);
         }
     }
 
     public void StartRunning() {
-        RecordList.clear();
+        mRecordList.clear();
+        mDisplacementList.clear();
         mState = State.RUNNING;
         this.mStartTime = System.currentTimeMillis();
     }
 
     public void PauseRunning() {
         mState = State.PAUSE;
+        this.mSpeed = 0.0f;
     }
 
     public void ResumeRunning() {
+        mDisplacementList.clear();
         mState = State.RUNNING;
+        this.mStartTime = System.currentTimeMillis();
     }
 
     public void StopRunning() {
-        RecordList.clear();
+        mRecordList.clear();
+        mDisplacementList.clear();
         mState = State.STOP;
-        this.mEndTime=System.currentTimeMillis();
+        this.mEndTime = System.currentTimeMillis();
     }
 
     //计算经纬度间距离
@@ -237,17 +278,17 @@ public class MapsUtils implements OnMapReadyCallback {
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
-
-                Log.e("test", "loaded!!!!1");
                 mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
                 if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     Location location = mLocationManager.getLastKnownLocation(mLocationProvider);
-                    CameraPosition currentCameraPosition = new CameraPosition.Builder().target(new LatLng(location.getLatitude(), location.getLongitude()))
-                            .zoom(20.5f)
-                            .bearing(300)
-                            .tilt(0)
-                            .build();
-                    mMap.moveCamera(CameraUpdateFactory.newCameraPosition(currentCameraPosition));
+                    if(location !=null) {
+                        CameraPosition currentCameraPosition = new CameraPosition.Builder().target(new LatLng(location.getLatitude(), location.getLongitude()))
+                                .zoom(20.5f)
+                                .bearing(300)
+                                .tilt(0)
+                                .build();
+                        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(currentCameraPosition));
+                    }
                 }
             }
         });

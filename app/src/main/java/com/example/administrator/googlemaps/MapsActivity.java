@@ -43,9 +43,13 @@ public class MapsActivity extends AppCompatActivity implements  View.OnClickList
     TextView getDistanceText;
     TextView getSpeed;
     Button StartRunning;
+    Button PauseRunning;
+    Button ResumeRunning;
     Button StopRunning;
     Button getDistance;
     Button getDuringTime;
+    Button getRunningSpeed;
+
 
 
     @Override
@@ -67,24 +71,30 @@ public class MapsActivity extends AppCompatActivity implements  View.OnClickList
 
     private void initClickListener() {
         StartRunning.setOnClickListener(this);
+        PauseRunning.setOnClickListener(this);
+        ResumeRunning.setOnClickListener(this);
         StopRunning.setOnClickListener(this);
 //        getDistanceButton.setOnClickListener(this);
-        getDuringTime.setOnClickListener(this);
+//        getDuringTime.setOnClickListener(this);
         getDistance.setOnClickListener(this);
+        getRunningSpeed.setOnClickListener(this);
     }
 
     private void initUI() {
         //UI逻辑
-        gerDuration= (TextView)findViewById(R.id.getDuration);
+//        gerDuration= (TextView)findViewById(R.id.getDuration);
         StartTime = (TextView)findViewById(R.id.StartTime);
         EndTime = (TextView)findViewById(R.id.EndTime);
         getDistanceText= (TextView)findViewById(R.id.getDistance);
         getSpeed = (TextView)findViewById(R.id.getSpeed);
 
         StartRunning = (Button) findViewById(R.id.StartButton);
+        PauseRunning = (Button) findViewById(R.id.PauseButton);
+        ResumeRunning = (Button) findViewById(R.id.ResumeButton);
         StopRunning = (Button)findViewById(R.id.StopButton);
         getDistance = (Button)findViewById(R.id.getDistanceButton);
-        getDuringTime = (Button)findViewById(R.id.getDuringTime);
+//        getDuringTime = (Button)findViewById(R.id.getDuringTime);
+        getRunningSpeed = (Button)findViewById(R.id.getSpeedButton);
     }
 
     @Override
@@ -92,19 +102,28 @@ public class MapsActivity extends AppCompatActivity implements  View.OnClickList
         switch (v.getId()){
             case R.id.StartButton:
                     mapsUtils.StartRunning();
-                    StartTime.setText(mapsUtils.getmStartTime()+"");
+                    StartTime.setText("开始时间："+mapsUtils.getmStartTime()+" ");
+                    break;
+            case R.id.PauseButton:
+                    mapsUtils.PauseRunning();
+                    break;
+            case R.id.ResumeButton:
+                    mapsUtils.ResumeRunning();
+                    StartTime.setText("开始时间："+mapsUtils.getmStartTime()+" ");
                     break;
             case R.id.StopButton:
                 mapsUtils.StopRunning();
-                EndTime.setText(mapsUtils.getmEndTime()+"");
+                EndTime.setText("结束时间："+mapsUtils.getmEndTime());
 //                mapsUtils.StopTime();
                 break;
             case R.id.getDistanceButton:
-                getDistanceText.setText(mapsUtils.getDistance());
+                getDistanceText.setText("累计路程："+mapsUtils.getDistance()+"m");
                 break;
-            case R.id.getDuringTime:
-                gerDuration.setText(mapsUtils.getDuration());
-                break;
+//            case R.id.getDuringTime:
+//                gerDuration.setText("瞬时间隔："+mapsUtils.getDuration());
+//                break;
+            case R.id.getSpeedButton:
+                getSpeed.setText("瞬时速度："+mapsUtils.getSpeed()+"m/s");
             default:
                 break;
         }

@@ -13,11 +13,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1">
-            <TextView
-                android:id="@+id/getDuration"
-                android:background="#ffffff"
-                android:layout_width="match_parent"
-                android:layout_height="39dp" />
+            <!--<TextView-->
+                <!--android:id="@+id/getDuration"-->
+                <!--android:background="#ffffff"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="39dp" />-->
             <LinearLayout
                 android:background="#000000"
                 android:layout_width="match_parent"
@@ -58,66 +58,122 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <Button
-                android:id="@+id/StartButton"
+            <LinearLayout
                 android:layout_marginBottom="1dp"
-                android:layout_marginTop="1dp"
-                android:layout_marginRight="1dp"
-                android:layout_marginLeft="1dp"
-                android:textAllCaps="false"
-                android:text="Start Running"
-                android:textSize="10dp"
-                android:background="@drawable/bt"
-                android:layout_gravity="center"
-                android:layout_weight="1"
                 android:layout_width="match_parent"
-                android:layout_height="39dp" />
+                android:layout_height="39dp">
+                <Button
+                    android:id="@+id/StartButton"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:textAllCaps="false"
+                    android:text="Start"
+                    android:textSize="10dp"
+                    android:background="@drawable/bt"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="39dp" />
+                <Button
+                    android:id="@+id/PauseButton"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:textAllCaps="false"
+                    android:text="Pause"
+                    android:textSize="10dp"
+                    android:background="@drawable/bt"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="39dp" />
+            </LinearLayout>
 
-
-            <Button
-                android:id="@+id/StopButton"
+            <LinearLayout
                 android:layout_marginBottom="1dp"
-                android:layout_marginTop="1dp"
-                android:layout_marginRight="1dp"
-                android:layout_marginLeft="1dp"
-                android:textAllCaps="false"
-                android:text="Stop Running"
-                android:textSize="10dp"
-                android:background="@drawable/bt"
-                android:layout_gravity="center"
-                android:layout_weight="1"
                 android:layout_width="match_parent"
-                android:layout_height="39dp" />
-            <Button
-                android:id="@+id/getDistanceButton"
-                android:layout_marginBottom="1dp"
-                android:layout_marginTop="1dp"
-                android:layout_marginRight="1dp"
-                android:layout_marginLeft="1dp"
-                android:textAllCaps="false"
-                android:text="getDistance"
-                android:textSize="10dp"
-                android:background="@drawable/bt"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:layout_width="match_parent"
-                android:layout_height="39dp" />
-            <Button
-                android:id="@+id/getDuringTime"
-                android:layout_marginBottom="1dp"
-                android:layout_marginTop="1dp"
-                android:layout_marginRight="1dp"
-                android:layout_marginLeft="1dp"
-                android:textAllCaps="false"
-                android:text="getDuringTime"
-                android:textSize="10dp"
-                android:background="@drawable/bt"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:layout_width="match_parent"
-                android:layout_height="39dp" />
+                android:layout_height="39dp">
+                <Button
+                    android:id="@+id/ResumeButton"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:textAllCaps="false"
+                    android:text="Resume"
+                    android:textSize="10dp"
+                    android:background="@drawable/bt"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="39dp" />
+                <Button
+                    android:id="@+id/StopButton"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:textAllCaps="false"
+                    android:text="Stop Running"
+                    android:textSize="10dp"
+                    android:background="@drawable/bt"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="39dp" />
+            </LinearLayout>
 
+            <LinearLayout
+                android:layout_marginBottom="1dp"
+                android:layout_width="match_parent"
+                android:layout_height="39dp">
+                <Button
+                    android:id="@+id/getDistanceButton"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:textAllCaps="false"
+                    android:text="getDistance"
+                    android:textSize="10dp"
+                    android:background="@drawable/bt"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="39dp" />
+                <Button
+                    android:id="@+id/getSpeedButton"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:textAllCaps="false"
+                    android:text="getSpeed"
+                    android:textSize="10dp"
+                    android:background="@drawable/bt"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="39dp" />
+            </LinearLayout>
 
+            <!--<Button-->
+                <!--android:id="@+id/getDuringTime"-->
+                <!--android:layout_marginBottom="1dp"-->
+                <!--android:layout_marginTop="1dp"-->
+                <!--android:layout_marginRight="1dp"-->
+                <!--android:layout_marginLeft="1dp"-->
+                <!--android:textAllCaps="false"-->
+                <!--android:text="getDuringTime"-->
+                <!--android:textSize="10dp"-->
+                <!--android:background="@drawable/bt"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:layout_weight="1"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="39dp" />-->
         </LinearLayout>
 
     </LinearLayout>
